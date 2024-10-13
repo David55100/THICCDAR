@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thiccness Calculator</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f0f4f8;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: #333;
+      font-size: 3em;
+      margin-bottom: 40px;
+    }
+    input, select, button {
+      margin: 10px;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: 2px solid #333;
+      outline: none;
+      transition: 0.3s;
+    }
+    input:focus, select:focus, button:hover {
+      border-color: #ff6347;
+    }
+    button {
+      background-color: #ff6347;
+      color: white;
+      cursor: pointer;
+    }
+    .error {
+      border: 2px solid red;
+    }
+    .loading {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      color: #ff6347;
+      margin-top: 20px;
+    }
+    .result {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 20px;
+      display: none;
+    }
+    .scoreboard {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #333;
+    }
+    .centered {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .try-again {
+      display: none;
+      padding: 15px 25px;
+      background-color: #ff6347;
+      color: white;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      font-family: 'Orbitron', sans-serif;
+      transition: 0.3s;
+      margin: 0 auto; /* Center the button */
+    }
+    .try-again:hover {
+      background-color: #e5533d;
+    }
+    .try-again:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>THICCDAR</h1>
+  
+  <div id="form-container">
+    <label for="name">Your Name:</label>
+    <br>
+    <input type="text" id="name" placeholder="Enter your name">
+    <br>
+    <label for="height">Height (in inches):</label>
+    <br>
+    <input type="number" id="height" placeholder="Max 84">
+    <br>
+    <label for="weight">Weight (in pounds):</label>
+    <br>
+    <input type="number" id="weight" placeholder="Max 250">
+    <br>
+    <label for="age">Age (in years):</label>
+    <br>
+    <input type="number" id="age" placeholder="Max 100">
+    <br>
+    <label for="hair-color">Hair Color:</label>
+    <br>
+    <select id="hair-color">
+      <option value="" disabled selected>Select a color</option>
+      <option value="blonde">Blonde</option>
+      <option value="brunette">Brunette</option>
+      <option value="black">Black</option>
+      <option value="ginger">Ginger</option>
+    </select>
+    <br>
+    <button onclick="calculateThiccness()">Submit</button>
+  </div>
+  
+  <div class="loading" id="loading" style="display:none;">Calculating thiccness...</div>
+  <div class="result" id="result"></div>
+  
+  <div class="scoreboard" id="scoreboard"></div>
+  
+  <div class="centered">
+    <button class="try-again" id="try-again" onclick="tryAgain()">Please let me try again</button>
+  </div>
+
+  <script>
+    const namesList = ["Olivia", "Emma", "Charlotte", "Amelia", "Sophia", "Isabella", "Ava", "Mia",
+     "Evelyn", "Luna", "Harper", "Liam", "Noah", "Oliver", "James", "Elijah", "William", "Henry", "Lucas",
+      "Benjamin", "Mateo", "Camila", "Sofia", "Scarlett", "Elizabeth", "Eleanor", "Emily", "Chloe", "Mila",
+       "Violet", "Penelope", "Gianna", "Aria", "Abigail", "Ella", "Levi", "Sebastian", "Daniel", "Jack", "Michael",
+        "Alexander", "Owen", "Asher", "Samuel", "Ethan", "Leo", "Jackson", "Mason", "John", "Hudson", "Luca", "Aiden",
+         "Avery", "Layla", "David", "Jacob", "Logan", "Luke", "Julian", "Madison", "Ellie", "Grace", "Zoe", "Riley",
+          "Wyatt", "Matt"];
+
+    let scoreboard = [];
+
+    function highlightError(input) {
+      input.classList.add('error');
+    }
+
+    function removeError(input) {
+      input.classList.remove('error');
+    }
+
+    function calculateThiccness() {
+      // Reset previous errors
+      removeError(document.getElementById('name'));
+      removeError(document.getElementById('height'));
+      removeError(document.getElementById('weight'));
+      removeError(document.getElementById('age'));
+      removeError(document.getElementById('hair-color'));
+
+      // Get input values
+      const name = document.getElementById('name').value;
+      const height = parseInt(document.getElementById('height').value);
+      const weight = parseInt(document.getElementById('weight').value);
+      const age = parseInt(document.getElementById('age').value);
+      const hairColor = document.getElementById('hair-color').value;
+
+      let valid = true;
+
+      // Validation
+      if (!name) {
+        highlightError(document.getElementById('name'));
+        valid = false;
+      }
+      if (isNaN(height) || height > 84) {
+        highlightError(document.getElementById('height'));
+        valid = false;
+      }
+      if (isNaN(weight) || weight > 250) {
+        highlightError(document.getElementById('weight'));
+        valid = false;
+      }
+      if (isNaN(age) || age > 100) {
+        highlightError(document.getElementById('age'));
+        valid = false;
+      }
+      if (!hairColor) {
+        highlightError(document.getElementById('hair-color'));
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Show loading animation
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+
+      let percentage = Math.floor(Math.random() * 101);
+      let loadingInterval = setInterval(() => {
+        percentage = Math.floor(Math.random() * 101);
+        document.getElementById('loading').innerHTML = `Calculating thiccness... ${percentage}%`;
+      }, 200);
+
+      // Simulate loading
+      setTimeout(() => {
+        clearInterval(loadingInterval);
+        document.getElementById('loading').style.display = 'none';
+        displayResult(percentage, name);
+        generateScoreboard(percentage, name);
+      }, 3000);
+    }
+
+    function displayResult(percentage, name) {
+      const resultDiv = document.getElementById('result');
+      const tryAgainButton = document.getElementById('try-again');
+      let message = '';
+      if (percentage < 80) {
+        message = "Darn, you really are not thicc.";
+        tryAgainButton.style.display = 'block'; // Show try again button if below 80%
+      } else if (percentage <= 85) {
+        message = "DAM YOU THICC!";
+      } else if (percentage <= 90) {
+        message = "DAM YOU THICCC!";
+      } else if (percentage <= 95) {
+        message = "DAM YOU THICCCC!";
+      } else {
+        message = "DAM YOU REALLY THICCCCC!";
+      }
+      resultDiv.innerHTML = `${name}, your thiccness is: ${percentage}%<br>${message}`;
+      resultDiv.style.display = 'block';
+    }
+
+    function generateScoreboard(userPercentage, userName) {
+      // Add user score to scoreboard
+      scoreboard.push({ name: userName, percentage: userPercentage });
+
+      // Generate 10 random names and scores
+      for (let i = 0; i < 10; i++) {
+        const randomName = namesList[Math.floor(Math.random() * namesList.length)];
+        const randomPercentage = Math.floor(Math.random() * 101);
+        scoreboard.push({ name: randomName, percentage: randomPercentage });
+      }
+
+      // Sort scores in descending order
+      scoreboard.sort((a, b) => b.percentage - a.percentage);
+
+      // Display scoreboard
+      const scoreboardDiv = document.getElementById('scoreboard');
+      scoreboardDiv.innerHTML = '<h3>Scoreboard</h3>';
+      scoreboard.forEach((entry, index) => {
+        scoreboardDiv.innerHTML += `<p>${index + 1}. ${entry.name}: ${entry.percentage}%</p>`;
+      });
+    }
+
+    function tryAgain() {
+      document.getElementById('form-container').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('try-again').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
